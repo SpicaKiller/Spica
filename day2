@@ -1,0 +1,77 @@
+977.有序数组的平方:
+
+class Solution {
+public:
+    vector<int> sortedSquares(vector<int>& nums) {
+        vector<int> res(nums.size(), 0);
+        int k = nums.size() - 1;
+        for(int i = 0, j = nums.size() -1 ;i <= j;){
+            if(nums[i] * nums[i] < nums[j] * nums[j] ){
+                res[k--] = nums[j] * nums[j];
+                j--;
+            }else{
+                res[k--] = nums[i] * nums[i];
+                i++;
+            }
+        }
+        return res;
+    }
+};
+
+209.长度最小的子数组
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        int sum = 0;
+        int res = INT32_MAX;
+        int i = 0;
+        int sublength = 0;
+        for(int j = 0; j < nums.size(); j++){
+            sum += nums[j];
+            while(sum >= target){
+                sublength = j - i + 1;
+                res = res < sublength ? res : sublength;
+                sum -= nums[i++];
+            }
+        }
+        return res == INT32_MAX? 0 : res; 
+    }
+};
+
+59.螺旋矩阵II
+class Solution {
+public:
+    vector<vector<int>> generateMatrix(int n) {
+        vector<vector<int>> res(n, vector<int>(n, 0));
+        int startx = 0, starty = 0;
+        int count = 1;
+        int loop = n / 2;
+        int mid = n / 2;
+        int offset = 1;
+        int i ,j;
+        while(loop--){
+            i = startx;
+            j = starty;
+
+            for(j = starty; j < n - offset; j++){
+                res[startx][j] = count++;
+            }
+            for(i = startx; i < n - offset; i++){
+                res[i][j] = count++;
+            }
+            for(;j > starty; j--){
+                res[i][j] = count++;
+            }
+            for(; i > startx; i--){
+                res[i][j] = count++;
+            }
+            startx++;
+            starty++;
+            offset += 1;
+        }
+        if(n % 2){
+            res[mid][mid] = count;
+        }
+        return res;
+    }
+};
