@@ -1,0 +1,79 @@
+104. 二叉树的最大深度
+class Solution {
+public:
+    int res;
+    void getDepth(TreeNode* node, int depth){
+        res = res > depth ? res : depth;
+        if(node -> left == nullptr && node -> right == nullptr) return;
+
+        if(node -> left){
+            depth++;
+            getDepth(node -> left, depth);
+            depth--;
+        }
+        if(node -> right){
+            depth++;
+            getDepth(node -> right, depth);
+            depth--;
+        }
+        return;
+    }
+
+    int maxDepth(TreeNode* root) {
+        if(root == nullptr) return 0;
+        res = 0;
+        getDepth(root, 1);
+        return res;
+    }
+};
+
+559. N 叉树的最大深度
+class Solution {
+public:
+    int maxDepth(Node* root) {
+        if(root == nullptr) return 0;
+        int depth = 0;
+        for(int i = 0; i < root -> children.size(); i++){
+            depth = max(depth, maxDepth(root -> children[i]));
+        }
+        return depth + 1;
+    }
+};
+
+111. 二叉树的最小深度
+class Solution {
+public:
+    int getDepth(TreeNode* node){
+        if(node == nullptr) return 0;
+        int leftDepth = getDepth(node -> left);
+        int rightDepth = getDepth(node -> right);
+
+        if(node -> left == nullptr && node -> right != nullptr){
+            return 1 + rightDepth;
+        }
+        if(node -> left != nullptr && node -> right == nullptr){
+            return 1 + leftDepth;
+        }
+
+        int res = 1 + min(leftDepth, rightDepth);
+        return res;
+    }
+    int minDepth(TreeNode* root) {
+        return getDepth(root);
+    }
+};
+
+222. 完全二叉树的节点个数
+class Solution {
+public:
+    int getNode(TreeNode* node){
+        if(node == nullptr) return 0;
+        int leftNode = getNode(node -> left);
+        int rightNode = getNode(node -> right);
+        int res = 1 + leftNode + rightNode;
+        return res;
+    }
+    int countNodes(TreeNode* root) {
+        return getNode(root);
+    }
+};
