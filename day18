@@ -1,0 +1,159 @@
+513. 找树左下角的值
+class Solution {
+public:
+    int findBottomLeftValue(TreeNode* root) {
+        queue<TreeNode*> que;
+        if(root != nullptr) que.push(root);
+        int res = 0;
+        while(!que.empty()){
+            int size = que.size();
+            for(int i = 0; i < size; i++){
+                TreeNode* node = que.front();
+                que.pop();
+                if(i == 0) res = node -> val;
+                if(node -> left) que.push(node -> left);
+                if(node -> right) que.push(node -> right);
+            }
+        } 
+        return res;
+    }
+};
+
+112. 路径总和
+class Solution {
+public:
+    bool traversal(TreeNode* cur, int count){
+        if(!cur -> left && !cur -> right && count == 0) return true;
+        if(!cur -> left && !cur -> right) return false;
+        
+        if(cur -> left){
+            if (traversal(cur->left, count - cur-> left -> val)) return true; 
+        }
+        if(cur -> right){
+            if(traversal(cur -> right, count - cur -> right -> val)) return true;
+        }
+        return false;
+
+        
+    }
+    bool hasPathSum(TreeNode* root, int targetSum) {
+        if(root == nullptr) return false;
+        return traversal(root, targetSum - root -> val);
+    }
+};
+
+113. 路径总和 II
+class Solution {
+private:
+    vector<vector<int>> res;
+    vector<int> path;
+    void traversal(TreeNode* cur, int count){
+        if(!cur -> left && !cur -> right && count == 0){
+            res.push_back(path);
+            return;
+        }
+
+        if(!cur -> left && !cur -> right) return;
+
+        if(cur -> left){
+            path.push_back(cur -> left -> val);
+            count -= cur -> left -> val;
+            traversal(cur -> left, count);
+            count += cur -> left -> val;
+            path.pop_back();
+        }
+        if(cur -> right){
+            path.push_back(cur -> right -> val);
+            count -= cur -> right -> val;
+            traversal(cur -> right, count);
+            count += cur -> right -> val;
+            path.pop_back();
+        }
+        return;
+    }
+public:
+    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+        res.clear();
+        path.clear();
+        if(root == nullptr) return res;
+        path.push_back(root -> val);
+        traversal(root , targetSum - root -> val);
+        return res;
+    }
+};
+
+106. 从中序与后序遍历序列构造二叉树
+class Solution {
+private:
+    TreeNode* traversal (vector<int>& inorder,  vector<int>& postorder) {
+        if(postorder.size() == 0) return nullptr;
+        int rootVal = postorder[postorder.size() - 1];
+        TreeNode* root = new TreeNode(rootVal);
+        if(postorder.size() == 1) return root;
+
+        int index;
+        for(index = 0; index < inorder.size(); index++){
+            if(inorder[index] == rootVal){
+                break;
+            }
+        }
+
+        vector<int> leftInorder(inorder.begin(), inorder.begin() + index);
+        vector<int> rightInorder(inorder.begin() + index + 1, inorder.end());
+
+        postorder.resize(postorder.size() - 1);
+
+        vector<int> leftPostorder(postorder.begin(), postorder.begin() + leftInorder.size());
+        vector<int> rightPostorder(postorder.begin() + leftInorder.size(), postorder.end());
+
+        root -> left = traversal(leftInorder, leftPostorder);
+        root -> right = traversal(rightInorder, rightPostorder);
+        
+        return root;
+    }
+public:
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+        if(inorder.size() == 0 || postorder.size() == 0) return nullptr;
+        return traversal(inorder, postorder);
+    }
+};
+
+105. 从前序与中序遍历序列构造二叉树
+class Solution {
+private:
+        TreeNode* traversal (vector<int>& inorder, int inorderBegin, int inorderEnd, vector<int>& preorder, int preorderBegin, int preorderEnd) {
+        if (preorderBegin == preorderEnd) return NULL;
+
+        int rootValue = preorder[preorderBegin]; 
+        TreeNode* root = new TreeNode(rootValue);
+
+        if (preorderEnd - preorderBegin == 1) return root;
+
+        int delimiterIndex;
+        for (delimiterIndex = inorderBegin; delimiterIndex < inorderEnd; delimiterIndex++) {
+            if (inorder[delimiterIndex] == rootValue) break;
+        }
+      
+        int leftInorderBegin = inorderBegin;
+        int leftInorderEnd = delimiterIndex;
+        int rightInorderBegin = delimiterIndex + 1;
+        int rightInorderEnd = inorderEnd;
+
+
+        int leftPreorderBegin =  preorderBegin + 1;
+        int leftPreorderEnd = preorderBegin + 1 + delimiterIndex - inorderBegin; 
+        int rightPreorderBegin = preorderBegin + 1 + (delimiterIndex - inorderBegin);
+        int rightPreorderEnd = preorderEnd;
+
+        root->left = traversal(inorder, leftInorderBegin, leftInorderEnd,  preorder, leftPreorderBegin, leftPreorderEnd);
+        root->right = traversal(inorder, rightInorderBegin, rightInorderEnd, preorder, rightPreorderBegin, rightPreorderEnd);
+
+        return root;
+    }
+
+public:
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        if (inorder.size() == 0 || preorder.size() == 0) return NULL;
+        return traversal(inorder, 0, inorder.size(), preorder, 0, preorder.size());
+    }
+};
