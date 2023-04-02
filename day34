@@ -1,0 +1,62 @@
+1005. K 次取反后最大化的数组和
+class Solution {
+private:
+    static bool cmp(int a, int b){
+        return abs(a) > abs(b);
+    }
+public:
+    int largestSumAfterKNegations(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end(), cmp);
+        for(int i = 0; i < nums.size(); i++){
+            if(nums[i] < 0 && k > 0){
+                nums[i] *= -1;
+                k--;
+            }
+        }
+        if(k % 2 == 1) nums[nums.size() - 1] *= -1;
+        int res = 0;
+        for(auto a : nums) res += a;
+        return res; 
+    }
+};
+
+134. 加油站
+class Solution {
+public:
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+        int curSum = 0;
+        int totalSum = 0;
+        int start = 0;
+        for(int i = 0; i < gas.size(); i++){
+            curSum += gas[i] -  cost[i];
+            totalSum += gas[i] - cost[i];
+            if(curSum < 0){
+                start = i + 1;
+                curSum = 0;
+            }
+        }
+        if(totalSum < 0) return -1;
+        return start;
+    }
+};
+
+135. 分发糖果
+class Solution {
+public:
+    int candy(vector<int>& ratings) {
+        vector<int> candyVec(ratings.size(), 1);
+        for(int i = 1; i < ratings.size(); i++){
+            if(ratings[i] > ratings[i - 1]) candyVec[i] = 1 + candyVec[i - 1];
+        }
+
+        for(int i = ratings.size() - 2; i >= 0; i--){
+            if(ratings[i] > ratings[i + 1]) 
+            candyVec[i] = max(candyVec[i], candyVec[i + 1] + 1);
+        }
+        int res = 0;
+        for(auto a : candyVec){
+            res += a;
+        }
+        return res;
+    }
+};
