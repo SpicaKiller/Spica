@@ -1,0 +1,50 @@
+738. 单调递增的数字
+class Solution {
+public:
+    int monotoneIncreasingDigits(int n) {
+        string strNum = to_string(n);
+        int flag = strNum.size();
+        for(int i = strNum.size() - 1; i > 0; i--){
+            if(strNum[i - 1] > strNum[i]){
+                flag = i;
+                strNum[i - 1]--;
+            }
+        }
+        for(int i = flag; i < strNum.size();i++){
+            strNum[i] = '9';
+        }
+        return stoi(strNum);
+
+        
+    }
+};
+
+968. 监控二叉树
+class Solution {
+private:
+    int res;
+    int traversal(TreeNode* cur){
+        if(cur == nullptr) return 2;
+        int left = traversal(cur -> left);
+        int right = traversal(cur -> right);
+
+        if(left == 2 && right == 2){
+            return 0;
+        }
+        if(left == 0 || right == 0){
+            res++;
+            return 1;
+        }
+        if(left == 1 || right == 1){
+            return 2;
+        }
+
+        return -1;
+    }
+public:
+    int minCameraCover(TreeNode* root) {
+        res = 0;
+        if(traversal(root) == 0) res++;
+        return res;
+    }
+};
